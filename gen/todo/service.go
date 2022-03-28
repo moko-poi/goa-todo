@@ -23,6 +23,8 @@ type Service interface {
 	Create(context.Context, *CreatePayload) (res string, err error)
 	// Update implements update.
 	Update(context.Context, *UpdatePayload) (res string, err error)
+	// Delete implements delete.
+	Delete(context.Context, *DeletePayload) (res string, err error)
 }
 
 // ServiceName is the name of the service as defined in the design. This is the
@@ -33,12 +35,18 @@ const ServiceName = "todo"
 // MethodNames lists the service method names as defined in the design. These
 // are the same values that are set in the endpoint request contexts under the
 // MethodKey key.
-var MethodNames = [4]string{"hello", "show", "create", "update"}
+var MethodNames = [5]string{"hello", "show", "create", "update", "delete"}
 
 // CreatePayload is the payload type of the todo service create method.
 type CreatePayload struct {
 	// Title
 	Title string
+}
+
+// DeletePayload is the payload type of the todo service delete method.
+type DeletePayload struct {
+	// ID
+	ID int
 }
 
 // HelloPayload is the payload type of the todo service hello method.

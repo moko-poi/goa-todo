@@ -1,0 +1,36 @@
+package todoapi
+
+import (
+	"database/sql"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/takahashis-shun/todo-goa/gen/todo"
+)
+
+type Sql struct {
+	db *sql.DB
+}
+
+func NewSqlDB(db *sql.DB) *Sql {
+	return &Sql{db}
+}
+
+func (s *Sql) Find(id int) (*todo.Todo, error) {
+	var t todo.Todo
+	err := s.db.QueryRow("select id, title, is_done from todos where id = ?", id).Scan(&t.ID, &t.Title, &t.IsDone)
+	if err != nil {
+		return nil, err
+	}
+	return &t, nil
+}
+
+func (s *Sql) Create(title string) (int, error) {
+	res, err := s.db.Exec("insert into todos (title) values (?)", title)
+	if err != nil {
+		return 0, err
+	}
+	id, err := res.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+	return int(id), nil
+}
